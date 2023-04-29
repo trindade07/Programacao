@@ -1,0 +1,25 @@
+function LimparMesPassado() {
+  var planilha = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("GASTOS");
+  var linFinal = planilha.getLastRow() + 1;
+  var i = 5;
+  var parcelas = 0;
+  while (i <= linFinal) 
+  {
+      parcelas = planilha.getRange(i,4).getValue() - 1;
+      if (parcelas <= 0)
+      {
+          planilha.getRange(i,4).activate();
+          planilha.deleteRows(planilha.getActiveRange().getRow(), 
+                    planilha.getActiveRange().getNumRows());
+          linFinal = linFinal - 1;
+      }
+      else
+      {
+           planilha.getRange(i,4).setValue(parcelas);
+           i = i + 1;
+      }
+  }
+  
+  // excluir coluna
+    planilha.getRange('E5:' + 'E'+linFinal).deleteCells(SpreadsheetApp.Dimension.COLUMNS);
+};
