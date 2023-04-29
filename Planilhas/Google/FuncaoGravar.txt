@@ -1,0 +1,47 @@
+function GravarGasto() {
+  var nroColunaValor = 5
+  var nroLinhaMes = 4
+  var nroLinhaTotal = 3
+  var origem = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("CADASTRAR GASTO");
+  
+
+  var destino = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("GASTOS");
+  var lin = destino.getLastRow() + 1;
+  Logger.log(" linha = " + lin);
+//  spreadsheet.getRange('A2').activate();
+//  spreadsheet.getCurrentCell().getNextDataCell(SpreadsheetApp.Direction.DOWN).activate();
+  destino.getRange(lin,1).activate();
+//spreadsheet.getActiveSheet().insertRowsAfter(spreadsheet.getActiveRange().getLastRow(), 1);
+//  destino.getActiveRange().offset(destino.getActiveRange().getNumRows(), 0, 1, destino.getActiveRange().//getNumColumns()).activate();
+//  origem.getRange('\'CADASTRAR GASTO\'!C2:C5').copyTo(destino.getActiveRange(), SpreadsheetApp.CopyPasteType.//PASTE_NORMAL, true);
+
+destino.getRange(lin,1).setValue(origem.getRange('C2').getValue());
+destino.getRange(lin,2).setValue(origem.getRange('C3').getValue());
+destino.getRange(lin,3).setValue(origem.getRange('C4').getValue());
+destino.getRange(lin,4).setValue(origem.getRange('C5').getValue());
+destino.getRange(lin,5).setValue(origem.getRange('C6').getValue());
+if (origem.getRange('C6').getValue() > 0)
+{
+    var parcelas = origem.getRange('C5').getValue();
+    for (var i=1;i < parcelas;i++) 
+    {
+       // Logger.log(" parcela = " + i);
+       // destino.getRange(nroLinhaMes,nroColunaValor + i).setValue("MES " + i);
+        destino.getRange(lin,nroColunaValor + i).setValue(origem.getRange('C6').getValue());
+        if (i > 1)
+        {
+          destino.getRange(nroLinhaTotal,nroColunaValor + i).activate();
+          destino.getRange(nroLinhaTotal,(nroColunaValor - 1) + i).copyTo(destino.getActiveRange(), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
+
+        }
+    };
+      // deletar valores
+      origem.getRange('C2:C6').activate();
+      origem.getActiveRangeList().clear({contentsOnly: true, skipFilteredRows: true});
+      origem.getRange('C2').activate();
+}
+else
+{
+  Browser.msgBox('Valor nao digitado',Browser.Buttons.OK);
+}
+};
