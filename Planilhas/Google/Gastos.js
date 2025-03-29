@@ -18,19 +18,27 @@ function DistribuirParcelas() {
 
    var Primeiralinha = Formulario.getRange('A2').getRow();
    var Ultimalinha = Formulario.getLastRow();
+   var UltimaLinhaParcela = Parcelas.getLastRow();
+   var UltimaColunaParcela = Parcelas.getLastColumn();
 
     Logger.log('Primeira linha = ' + Primeiralinha);
     Logger.log('Ultima linha = ' + Ultimalinha);
     Parcelas.setFrozenRows(0);
-    Parcelas.deleteRows(1, Parcelas.getLastRow() - 1);
+
+    if (Parcelas.getLastRow() > 1 )
+        {   Parcelas.deleteRows(1, Parcelas.getLastRow())};
+    if (Parcelas.getLastColumn() > 1 )
+        {  Parcelas.deleteColumns(1,Parcelas.getLastColumn()) };
+  
     LinhaParcela = 1;
     // DataInicial = Formulario.getRange(i,2).getValue();
     // 1o param => ano, 2o param =>  o mes de Jan = 0 ate dez = 11, 3o param => dia 
     // DataInicial = new Date(2024,0,426);
     DiaInicialFatura = 26;
-    DataAtual = new Date(new Date().getFullYear(), new Date().getMonth(),DiaInicialFatura);
-    UltimaDataParcela = DataAtual;
-    PrimeiraDataParcela = DataAtual;
+    DataInicialFatura = new Date(new Date().getFullYear(), new Date().getMonth(),DiaInicialFatura);
+    DataFinalFatura = new Date(new Date().getFullYear(), new Date().getMonth() + 1,DiaInicialFatura);
+    UltimaDataParcela = DataInicialFatura;
+    PrimeiraDataParcela = DataInicialFatura;
     
 
     Parcelas.getRange(1,1).setValue('Data Compra');
@@ -57,23 +65,25 @@ function DistribuirParcelas() {
            MesDataCompra = new Date(DataCompra).getMonth();
            QtdParcelas = Formulario.getRange(i,4).getValue();
            DiaParcelaFinal = new Date(DataCompra).getDate();
-           // Mes proxima parcela = mes da compra sempre começa no mes seguinte. Tem que somar 2 pois o mes começa com 0
-           MesProximaParcela = MesDataCompra + 2; 
+           // Mes proxima parcela = mes da compra sempre começa no mes seguinte. 
+           MesProximaParcela = MesDataCompra + 1; 
            // Mes da ultima parcela = soma a qtd parcelas
-           MesParcelaFinal = MesProximaParcela + QtdParcelas;
+           MesParcelaFinal = MesDataCompra + QtdParcelas;
            AnoParcelaFinal = new Date(DataCompra).getFullYear();
 
-           DataCompraFinal = new Date(AnoParcelaFinal, MesParcelaFinal, DiaInicialFatura);
-           DataProximaParcela = new Date(AnoParcelaFinal, MesProximaParcela, DiaInicialFatura);
+           DataCompraFinal = new Date(AnoParcelaFinal, MesParcelaFinal, DiaParcelaFinal);
+           DataProximaParcela = new Date(AnoParcelaFinal, MesProximaParcela, DiaParcelaFinal);
       
            // o mes de Jan = 0 e dez = 11
-            Logger.log(' Data Atual = ' + Utilities.formatDate(new Date(DataAtual),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
+            Logger.log(' Data Incial Fatura = ' + Utilities.formatDate(new Date(DataInicialFatura),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
+            
+            Logger.log(' Data Final Fatura = ' + Utilities.formatDate(new Date(DataFinalFatura),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
             Logger.log(' Data Compra Inicial = ' + Utilities.formatDate(new Date(DataCompra),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
             Logger.log(' Data Compra Final = ' + Utilities.formatDate(new Date(DataCompraFinal),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
             Logger.log(' Data Prox Parcela 1 = ' + Utilities.formatDate(new Date(DataProximaParcela),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
             
            
-           if (DataCompraFinal < DataAtual)
+           if (DataCompraFinal < DataInicialFatura)
            {
 
               Historico.getRange(LinhaHistorico,1).activate();
@@ -135,7 +145,7 @@ function DistribuirParcelas() {
                     Logger.log('Data Parcela (' + j + ') = ' + Utilities.formatDate(new Date(DataProximaParcela),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
 
                      // não exibir parcela vencida
-                      if (DataProximaParcela < DataAtual)
+                      if (DataProximaParcela < DataInicialFatura)
                       {
                           QtdParcelaPaga = j;
                           Parcelas.getRange(LinhaParcela,6).setValue(QtdParcelaPaga * ValorParcela);
@@ -144,15 +154,16 @@ function DistribuirParcelas() {
                       
                       else
                       {
-                         if (new Date(DataProximaParcela).getTime() == new Date(DataAtual).getTime())
+                         //if (new Date(DataProximaParcela).getTime() == new Date(DataAtual).getTime())
+                         if (DataProximaParcela > DataInicialFatura && DataProximaParcela < DataFinalFatura)
                          {
                             
                             QtdParcelaPaga = j;
-                            Logger.log('data igual = ' + QtdParcelaPaga)
+                            Logger.log('data dentro do mes da Fatura = ' + QtdParcelaPaga);
                          }
                          else
                          {
-                            Logger.log('data diferente = ' + DataProximaParcela + ' <> atual = ' + DataAtual)
+                            Logger.log('data Proximo mes da fatura = ' + DataProximaParcela );
                          }
                            
                         Nrocoluna = Nrocoluna + 1;  
