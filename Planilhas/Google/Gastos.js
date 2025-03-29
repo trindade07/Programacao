@@ -46,8 +46,8 @@ function DistribuirParcelas() {
      
  
      Parcelas.getRange(1,1).setValue('Data Compra');
-     Parcelas.getRange(1,2).setValue('Descri√ß√£o Compra');
-     Parcelas.getRange(1,3).setValue('Respons√°vel');
+     Parcelas.getRange(1,2).setValue('DescriÁ„o Compra');
+     Parcelas.getRange(1,3).setValue('Respons·vel');
      Parcelas.getRange(1,4).setValue('Pagas/Total');
      Parcelas.getRange(1,5).setValue('Valor Compra');
      Parcelas.getRange(1,6).setValue('Valor Pago');
@@ -69,7 +69,7 @@ function DistribuirParcelas() {
             MesDataCompra = new Date(DataCompra).getMonth();
             QtdParcelas = Formulario.getRange(i,4).getValue();
             DiaParcelaFinal = new Date(DataCompra).getDate();
-            // Mes proxima parcela = mes da compra sempre come√ßa no mes seguinte. 
+            // Mes proxima parcela = mes da compra sempre comeÁa no mes seguinte. 
             MesProximaParcela = MesDataCompra + 1; 
             // Mes da ultima parcela = soma a qtd parcelas
             MesParcelaFinal = MesDataCompra + QtdParcelas;
@@ -148,7 +148,7 @@ function DistribuirParcelas() {
                      
                      Logger.log('Data Parcela (' + j + ') = ' + Utilities.formatDate(new Date(DataProximaParcela),Session.getScriptTimeZone(), 'dd/MM/yyyy'));
  
-                      // n√£o exibir parcela vencida
+                      // n„o exibir parcela vencida
                        if (DataProximaParcela < DataInicialFatura)
                        {
                            QtdParcelaPaga = j;
